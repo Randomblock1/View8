@@ -5,14 +5,9 @@
 <h2>Requirements</h2>
 <ul>
     <li>Python 3.x</li>
-    <li>Disassembler binary. Available versions:</li>
-    <ul>
-        <li>V8 Version <code>9.4.146.24</code> (Used in Node V16.x)</li>
-        <li>V8 Version <code>10.2.154.26</code> (Used in Node V18.x)</li>
-        <li>V8 Version <code>11.3.244.8</code> (Used in Node V20.x)</li>
-    </ul>
+    <li>Disassembler binary. You'll have to build this yourself. See the instructions below.</li>
 </ul>
-<p>For compiled versions, visit the <a href="https://github.com/suleram/View8/releases">releases page</a>.</p>
+<p>For compiled disassembler binaries, visit the <a href="https://github.com/suleram/View8/releases">original repo's releases page</a>.</p>
 
 
 <h2>Usage</h2>
@@ -45,7 +40,7 @@
 <pre><code>python view8.py input_file output_file -e v8_opcode decompiled</code></pre>
 <p>By default, the format used is <code>decompiled</code>.</p>
 
-<h3>VersionDetector.exe</h3>
+<h3>version_detector.py</h3>
 <p>The V8 bytecode version is stored as a hash at the beginning of the file. Below are the options available for <code>VersionDetector.exe</code>:</p>
 <ul>
     <li><code>-h</code>: Retrieves a version and returns its hash.</li>
@@ -53,22 +48,11 @@
     <li><code>-f</code>: Retrieves a file and returns its version.</li>
 </ul>
 
-### Get V8 Version
+### Building The Disassembler (Modern versions)
 
-The v8 version of a `.jsc` file can be found using one of the following methods:
+See [Building V8 for Electron Apps with Leap Tiering](./build_v8_electron_leaptiering.md).
 
-- <https://j4k0xb.github.io/v8-version-analyzer>
-- VersionDetector.exe
-- If the Node.js binary is available: `./path_to_node -p process.versions.v8`
-- If the Electron binary is available:
-  - Linux/Mac: `ELECTRON_RUN_AS_NODE=1 ./path_to_electron_app -p process.versions.v8`
-  - Windows: `set ELECTRON_RUN_AS_NODE=1 && path_to_electron_app -p process.versions.v8`
-- If the Electron version is known: Find the `v8` field in <https://releases.electronjs.org/releases.json>
-- If the Node version is known: Find the `v8` field in <https://nodejs.org/dist/index.json>
-
-Sometimes there isn't a matching v8 version because it has been edited. In this case, just select the closest one before.
-
-### Building The Disassembler
+### Building The Disassembler (Old versions)
 
 Guide/disassembler/patch based on [v8dasm](https://github.com/noelex/v8dasm) and <https://github.com/v8/v8/tree/10.6.194.26>.
 
