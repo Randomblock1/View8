@@ -39,10 +39,36 @@ def parse_array(lines, func_name):
 def parse_object(lines, func_name):
     if "Start " not in (line := next(lines)):
         raise Exception(f"Error got line \"{line}\" not Start Object")
-    const_list = iter(parse_const_array(lines, func_name)[1:])
-    object_literal = "{" + ", ".join([f"{key}: {value}" for key, value in zip(const_list, const_list)]) + "}"
+    # ObjectBoilerplateDescription has no "- length:" header, only "- capacity:",
+    # so we can't use parse_const_array. Read element lines directly until "End ".
+    elements = []
     while "End " not in (line := next(lines)):
-        pass
+        match = re.search(r"^(\d+(?:\-\d+)?):\s(0x[0-9a-fA-F]+\s)?(.+)", line)
+        if not match:
+            continue
+        _, address, value = match.groups()
+        if not address:
+            elements.append(value)
+        elif value == "<null>":
+            elements.append("null")
+        elif value.startswith("<String"):
+            v = value.split("#", 1)[-1].rstrip('> ').replace('"', '\\"')
+            elements.append(f'"{v}"')
+        elif value.startswith("<SharedFunctionInfo"):
+            sfi_name = value.split(" ", 1)[-1].rstrip('> ') if " " in value else ""
+            elements.append(parse_shared_function_info(lines, sfi_name, func_name))
+        elif value.startswith("<ArrayBoilerplateDescription") or value.startswith("<FixedArray"):
+            elements.append(parse_array(lines, func_name))
+        elif value.startswith("<ObjectBoilerplateDescription"):
+            elements.append(parse_object(lines, func_name))
+        elif value.startswith("<Odd Oddball"):
+            elements.append("null")
+        elif value.startswith("<BigInt"):
+            elements.append(parse("<BigInt {}>", value)[0] + "n")
+        else:
+            elements.append(value.rstrip('>').split(" ", 1)[-1])
+    it = iter(elements)
+    object_literal = "{" + ", ".join([f"{key}: {value}" for key, value in zip(it, it)]) + "}"
     return object_literal
 
 

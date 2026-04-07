@@ -1,21 +1,22 @@
 
 import subprocess
+import sys
 import os
 from Parser.sfi_file_parser import parse_file
 
 
 def get_version(view8_dir, file_name):
-    # Define the relative path to the binary
-    binary_path = os.path.join(view8_dir, 'Bin', 'VersionDetector.exe')
+    # Define the relative path to the script
+    script_path = os.path.join(view8_dir, 'Bin', 'version_detector.py')
 
-    # Ensure the binary exists
-    if not os.path.isfile(binary_path):
-        raise FileNotFoundError(f"The binary '{binary_path}' does not exist.")
+    # Ensure the script exists
+    if not os.path.isfile(script_path):
+        raise FileNotFoundError(f"The script '{script_path}' does not exist.")
 
-    # Call the binary with the file name as argument
+    # Call the script with the file name as argument
     try:
-        result = subprocess.run([binary_path, '-f', file_name], capture_output=True, text=True, check=True)
-        # Return the output from the binary
+        result = subprocess.run([sys.executable, script_path, '-f', file_name], capture_output=True, text=True, check=True)
+        # Return the output from the script
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Failed to detect version for file {file_name}.")
