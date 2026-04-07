@@ -17,18 +17,11 @@ may be sufficient. Use this guide if you see errors like:
 
 ## 1. Determine your target V8 version
 
-The V8 version must match the one that compiled your `.jsc` file. You can find it in the
-Electron release notes, or by reading the magic bytes from the file:
+The V8 version must match the one that compiled your `.jsc` file. You can find it by running 
+`Bin/version_detector.py` on your file, or by matching the Electron version to V8 version in the
+Electron release notes: <https://releases.electronjs.org/>
 
-```bash
-strings your_file.jsc | grep -E "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$" | head -3
-```
-
-Alternatively, check `node_modules/electron/dist/electron --version` in the app directory, then
-look up which V8 version that Electron release ships at
-<https://releases.electronjs.org/>
-
-This guide was written for **V8 13.0.245.19** (Electron 33.x). Adjust the tag below accordingly.
+This guide was written for **V8 13.0.245.19** (Electron 33.2.1). Adjust the tag below accordingly.
 
 ---
 
